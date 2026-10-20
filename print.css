@@ -1,0 +1,105 @@
+/* ==========================================================================
+   Attendify Pro - Official Print Stylesheet
+   ========================================================================== */
+
+@media print {
+  @page {
+    size: A4 landscape;
+    margin: 12mm 10mm;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 10pt;
+  }
+
+  /* Hide navigation, header, buttons, controls */
+  .top-header,
+  .nav-tab-bar,
+  .attendance-controls-bar,
+  .btn-primary,
+  .btn-secondary,
+  .btn-icon,
+  .modal-close-btn,
+  #toast-container,
+  .no-print {
+    display: none !important;
+  }
+
+  .main-viewport {
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .glass-panel, .table-container {
+    border: 1px solid #94a3b8 !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+  }
+
+  .modern-table th {
+    background: #f1f5f9 !important;
+    color: #0f172a !important;
+    border: 1px solid #cbd5e1 !important;
+  }
+
+  .modern-table td {
+    border: 1px solid #cbd5e1 !important;
+    color: #000000 !important;
+  }
+
+  /* Printable Official Header */
+  .print-header {
+    display: block !important;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #0f172a;
+    padding-bottom: 0.75rem;
+  }
+
+  .print-header h1 {
+    font-size: 16pt;
+    font-weight: 800;
+    margin-bottom: 0.25rem;
+  }
+
+  .print-header p {
+    font-size: 10pt;
+    color: #334155;
+  }
+
+  /* Official Signatures Block */
+  .print-signatures {
+    display: flex !important;
+    justify-content: space-between;
+    margin-top: 3rem;
+    padding: 0 2rem;
+  }
+
+  .sig-line {
+    text-align: center;
+    width: 200px;
+    border-top: 1px solid #000000;
+    padding-top: 0.4rem;
+    font-size: 9pt;
+    font-weight: 600;
+  }
+
+  /* Badges print layout */
+  .id-cards-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1.5cm !important;
+    page-break-inside: avoid;
+  }
+
+  .student-id-card {
+    border: 2px solid #0f172a !important;
+    box-shadow: none !important;
+    page-break-inside: avoid;
+  }
+}
+
+.print-header, .print-signatures {
+  display: none;
+}
