@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Attendify Pro - Next-Generation Student Attendance Management System with QR Code Scanning, Timetable Support, Visual Analytics, and Institutional Reports">
+  <title>Attendify Pro — Student Attendance Management System</title>
+  
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/print.css">
+  
+  <!-- Favicon icon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%236366f1'/><path d='M30 50 L45 65 L72 35' stroke='white' stroke-width='12' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+</head>
+<body class="dark-theme">
+  <div class="app-layout">
+    <!-- ====================================================================
+         TOP HEADER
+         ==================================================================== -->
+    <header class="top-header" role="banner">
+      <div class="brand-wrapper">
+        <div class="brand-icon" aria-hidden="true">✓</div>
+        <div class="brand-text">
+          <h1>
+            Attendify Pro
+            <span class="badge-pulse">
+              <span class="pulse-dot"></span>
+              Academic 2026-27
+            </span>
+          </h1>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- Live Clock -->
+        <div class="live-clock-badge" id="liveClock" aria-label="Current date and time">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          <span id="clockTime">Loading time...</span>
+        </div>
+
+        <!-- Quick Scan Button -->
+        <button class="btn-primary no-print" id="btnQuickScan" style="padding: 0.45rem 1rem; font-size: 0.82rem;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          Scan ID / QR
+        </button>
+
+        <!-- Reset Sample Data Button -->
+        <button class="btn-icon no-print" id="btnResetData" title="Reset Demo Data" aria-label="Reset Demo Data">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M8 16H3v5"></path></svg>
+        </button>
+
+        <!-- Theme Toggle Button -->
+        <button class="btn-icon no-print" id="btnThemeToggle" title="Toggle Light/Dark Theme" aria-label="Toggle theme">
+          <svg id="themeIconSun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg id="themeIconMoon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- ====================================================================
+         NAVIGATION TABS
+         ==================================================================== -->
+    <nav class="nav-tab-bar" aria-label="Main Navigation">
+      <button class="tab-btn active" data-tab="dashboard">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+        Dashboard
+      </button>
+
+      <button class="tab-btn" data-tab="attendance">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+        Mark Attendance
+      </button>
+
+      <button class="tab-btn" data-tab="scanner">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+        QR Scanner
+      </button>
+
+      <button class="tab-btn" data-tab="students">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        Students & Classes
+      </button>
+
+      <button class="tab-btn" data-tab="badges">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="18" rx="2"></rect><line x1="2" y1="9" x2="22" y2="9"></line><line x1="8" y1="21" x2="8" y2="9"></line></svg>
+        ID Cards & Badges
+      </button>
+
+      <button class="tab-btn" data-tab="reports">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+        Reports & Export
+      </button>
+
+      <button class="tab-btn" data-tab="alerts">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        At-Risk Alerts
+        <span class="tab-badge" id="tabAlertBadge">0</span>
+      </button>
+    </nav>
+
+    <!-- ====================================================================
+         MAIN VIEWPORT
+         ==================================================================== -->
+    <main class="main-viewport" role="main">
+
+      <!-- ================================================================
+           VIEW 1: DASHBOARD
+           ================================================================ -->
+      <section id="view-dashboard" class="view-section active">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">Institutional Overview</h2>
+            <p class="section-subtitle">Real-time attendance intelligence, trends, and risk monitoring</p>
+          </div>
+          <div class="control-group">
+            <label class="form-label" for="dashClassFilter">Filter Class:</label>
+            <select id="dashClassFilter" class="select-custom">
+              <option value="">All Academic Classes</option>
+            </select>
+            <input type="date" id="dashDateFilter" class="input-custom">
+          </div>
+        </div>
+
+        <!-- KPI Metric Cards -->
+        <div class="kpi-grid">
+          <!-- Total Students -->
+          <div class="kpi-card" style="--card-color: #6366f1; --card-bg: rgba(99, 102, 241, 0.15);">
+            <div class="kpi-top">
+              <span class="kpi-title">Total Enrolled</span>
+              <div class="kpi-icon-badge">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+              </div>
+            </div>
+            <div class="kpi-value" id="kpiTotalStudents">0</div>
+            <div class="kpi-subtext">Active student profiles</div>
+          </div>
+
+          <!-- Present Today -->
+          <div class="kpi-card" style="--card-color: #10b981; --card-bg: rgba(16, 185, 129, 0.15);">
+            <div class="kpi-top">
+              <span class="kpi-title">Present Today</span>
+              <div class="kpi-icon-badge">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </div>
+            </div>
+            <div class="kpi-value" id="kpiPresentToday" style="color: #10b981;">0</div>
+            <div class="kpi-subtext" id="kpiPresentRate">0% marked present</div>
+          </div>
+
+          <!-- Absent Today -->
+          <div class="kpi-card" style="--card-color: #f43f5e; --card-bg: rgba(244, 63, 94, 0.15);">
+            <div class="kpi-top">
+              <span class="kpi-title">Absent Today</span>
+              <div class="kpi-icon-badge">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </div>
+            </div>
+            <div class="kpi-value" id="kpiAbsentToday" style="color: #f43f5e;">0</div>
+            <div class="kpi-subtext">Requires absence tracking</div>
+          </div>
+
+          <!-- Late / Excused Today -->
+          <div class="kpi-card" style="--card-color: #f59e0b; --card-bg: rgba(245, 158, 11, 0.15);">
+            <div class="kpi-top">
+              <span class="kpi-title">Late / Excused</span>
+              <div class="kpi-icon-badge">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+              </div>
+            </div>
+            <div class="kpi-value" id="kpiLateExcused" style="color: #f59e0b;">0</div>
+            <div class="kpi-subtext" id="kpiLateBreakdown">0 Late, 0 Excused</div>
+          </div>
+
+          <!-- Overall Attendance Rate -->
+          <div class="kpi-card" style="--card-color: #8b5cf6; --card-bg: rgba(139, 92, 246, 0.15);">
+            <div class="kpi-top">
+              <span class="kpi-title">Cumulative Rate</span>
+              <div class="kpi-icon-badge">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+              </div>
+            </div>
+            <div class="kpi-value" id="kpiOverallRate">0%</div>
+            <div class="kpi-subtext">All recorded sessions</div>
+          </div>
+
+          <!-- Low Attendance Alerts -->
+          <div class="kpi-card" style="--card-color: #ef4444; --card-bg: rgba(239, 68, 68, 0.15); cursor: pointer;" id="kpiAtRiskCard">
+            <div class="kpi-top">
+              <span class="kpi-title" style="color: #ef4444;">At-Risk (&lt;75%)</span>
+              <div class="kpi-icon-badge">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path></svg>
+              </div>
+            </div>
+            <div class="kpi-value" id="kpiLowCount" style="color: #ef4444;">0</div>
+            <div class="kpi-subtext">Click to view warning list →</div>
+          </div>
+        </div>
+
+        <!-- Dashboard Charts Row -->
+        <div class="dashboard-grid">
+          <!-- 14-Day Attendance Trend -->
+          <div class="glass-panel">
+            <div class="panel-header">
+              <div>
+                <h3 class="panel-title">14-Day Attendance Rate Trend (%)</h3>
+                <p class="section-subtitle">Dashed amber line indicates 75% institutional threshold</p>
+              </div>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="trendChartCanvas"></canvas>
+            </div>
+          </div>
+
+          <!-- Status Distribution Doughnut -->
+          <div class="glass-panel">
+            <div class="panel-header">
+              <div>
+                <h3 class="panel-title">Today's Distribution</h3>
+                <p class="section-subtitle">Breakdown by status type</p>
+              </div>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="doughnutChartCanvas"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Class Comparison Bar Chart -->
+        <div class="glass-panel">
+          <div class="panel-header">
+            <div>
+              <h3 class="panel-title">Class Performance Comparison</h3>
+              <p class="section-subtitle">Overall attendance percentage across classes</p>
+            </div>
+          </div>
+          <div class="chart-wrapper" style="height: 180px;">
+            <canvas id="classBarChartCanvas"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           VIEW 2: MARK ATTENDANCE
+           ================================================================ -->
+      <section id="view-attendance" class="view-section">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">Mark Attendance Roster</h2>
+            <p class="section-subtitle">Select class, date, and subject to record daily or lecture attendance</p>
+          </div>
+          <div class="bulk-actions-group">
+            <button class="btn-primary" id="btnSaveAttendance">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+              Save Attendance Sheet
+            </button>
+          </div>
+        </div>
+
+        <!-- Controls Bar -->
+        <div class="attendance-controls-bar">
+          <div class="control-group">
+            <div>
+              <label class="form-label" for="attClassSelect">Class / Section</label>
+              <select id="attClassSelect" class="select-custom">
+                <!-- Dynamically populated -->
+              </select>
+            </div>
+
+            <div>
+              <label class="form-label" for="attSubjectSelect">Subject / Timetable</label>
+              <select id="attSubjectSelect" class="select-custom">
+                <option value="general">General Daily Attendance</option>
+                <!-- Dynamically populated -->
+              </select>
+            </div>
+
+            <div>
+              <label class="form-label" for="attDatePicker">Date</label>
+              <div style="display: flex; gap: 4px;">
+                <input type="date" id="attDatePicker" class="input-custom">
+                <button class="btn-secondary" id="btnDateToday" title="Jump to Today" style="padding: 0 0.6rem;">Today</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Stats Pill -->
+          <div class="attendance-stats-pill">
+            <div class="stat-item"><span class="stat-dot present"></span> Present: <span id="attCountP">0</span></div>
+            <div class="stat-item"><span class="stat-dot absent"></span> Absent: <span id="attCountA">0</span></div>
+            <div class="stat-item"><span class="stat-dot late"></span> Late: <span id="attCountL">0</span></div>
+            <div class="stat-item"><span class="stat-dot excused"></span> Excused: <span id="attCountE">0</span></div>
+          </div>
+
+          <!-- Bulk Shortcuts -->
+          <div class="bulk-actions-group">
+            <button class="btn-secondary" id="btnMarkAllPresent" title="Mark All Present">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              All Present
+            </button>
+            <button class="btn-secondary" id="btnMarkAllAbsent" title="Mark All Absent">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              All Absent
+            </button>
+          </div>
+        </div>
+
+        <!-- Student Roster Table -->
+        <div class="table-container">
+          <table class="modern-table" id="attendanceTable">
+            <thead>
+              <tr>
+                <th style="width: 120px;">Roll No</th>
+                <th>Student Name</th>
+                <th style="width: 220px; text-align: center;">Status (P / A / L / E)</th>
+                <th>Remarks / Notes</th>
+                <th style="width: 140px;">Recorded Info</th>
+              </tr>
+            </thead>
+            <tbody id="attendanceTableBody">
+              <!-- Dynamically populated rows -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           VIEW 3: QR CODE & DIGITAL ID SCANNER
+           ================================================================ -->
+      <section id="view-scanner" class="view-section">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">Digital ID & QR Attendance Scanner</h2>
+            <p class="section-subtitle">Real-time camera scanner or barcode reader with instant verification chime</p>
+          </div>
+          <div class="control-group">
+            <button class="btn-secondary" id="btnToggleSound">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+              Sound: <span id="soundStatusText">Enabled</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="scanner-container">
+          <!-- Live Camera Viewport -->
+          <div class="glass-panel" style="display: flex; flex-direction: column; align-items: center;">
+            <div class="scanner-box" id="scannerViewport">
+              <video id="cameraFeed" class="camera-feed" playsinline autoplay muted></video>
+              
+              <!-- Reticle & Animated Laser Sweep -->
+              <div class="scanner-reticle">
+                <div class="reticle-corner corner-tl"></div>
+                <div class="reticle-corner corner-tr"></div>
+                <div class="reticle-corner corner-bl"></div>
+                <div class="reticle-corner corner-br"></div>
+                <div class="laser-sweep-line"></div>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 0.75rem; margin-top: 1rem; width: 100%; justify-content: center;">
+              <button class="btn-primary" id="btnStartCamera">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                Start Camera
+              </button>
+              <button class="btn-secondary" id="btnStopCamera">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="6" width="12" height="12"></rect></svg>
+                Stop Camera
+              </button>
+            </div>
+            <p class="section-subtitle" style="text-align: center; margin-top: 0.5rem; font-size: 0.78rem;">
+              Position the student QR badge in front of the lens. Works with mobile cameras and USB webcams.
+            </p>
+          </div>
+
+          <!-- Manual / USB Scanner Input & Fast Simulator -->
+          <div class="glass-panel" style="display: flex; flex-direction: column; gap: 1.25rem;">
+            <div class="panel-header">
+              <h3 class="panel-title">Scan Input & Simulation</h3>
+            </div>
+
+            <!-- Manual input -->
+            <div class="form-group">
+              <label class="form-label" for="scannerManualInput">Scan or Enter Roll Number / QR Token:</label>
+              <div style="display: flex; gap: 0.5rem;">
+                <input type="text" id="scannerManualInput" class="input-custom" placeholder="e.g. 1001 or ATT-1001-..." style="flex: 1;" autocomplete="off">
+                <button class="btn-primary" id="btnSubmitManualScan">Verify</button>
+              </div>
+            </div>
+
+            <!-- Fast student simulation dropdown for testing -->
+            <div class="form-group" style="border-top: 1px solid var(--border-subtle); padding-top: 1rem;">
+              <label class="form-label" for="simulatorStudentSelect">Simulate Scan From Roster:</label>
+              <div style="display: flex; gap: 0.5rem;">
+                <select id="simulatorStudentSelect" class="select-custom" style="flex: 1;">
+                  <!-- Dynamically populated with students -->
+                </select>
+                <button class="btn-secondary" id="btnTriggerSimulation">Simulate</button>
+              </div>
+            </div>
+
+            <!-- Verified Student Pop-in Banner -->
+            <div id="verifiedStudentBanner" style="display: none;">
+              <!-- Populated when student scans -->
+            </div>
+
+            <!-- Recent Scans Activity Log -->
+            <div style="flex: 1;">
+              <h4 style="font-size: 0.88rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--text-secondary);">Today's Real-time Scans</h4>
+              <div id="recentScansList" style="display: flex; flex-direction: column; gap: 0.5rem; max-height: 240px; overflow-y: auto;">
+                <p style="font-size: 0.82rem; color: var(--text-muted);">No scans recorded this session yet.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           VIEW 4: STUDENTS & CLASSES DIRECTORY
+           ================================================================ -->
+      <section id="view-students" class="view-section">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">Students & Class Management</h2>
+            <p class="section-subtitle">Manage student enrollment, roll numbers, classes, and subjects</p>
+          </div>
+          <div class="bulk-actions-group">
+            <button class="btn-secondary" id="btnOpenAddClass">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"></path></svg>
+              New Class
+            </button>
+            <button class="btn-secondary" id="btnOpenAddSubject">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"></path></svg>
+              New Subject
+            </button>
+            <button class="btn-primary" id="btnOpenAddStudent">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
+              Add Student
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter & Search Toolbar -->
+        <div class="attendance-controls-bar">
+          <div class="control-group">
+            <div>
+              <label class="form-label" for="studentFilterClass">Filter Class</label>
+              <select id="studentFilterClass" class="select-custom">
+                <option value="">All Classes</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label" for="studentSearchInput">Search Student</label>
+              <input type="text" id="studentSearchInput" class="input-custom" placeholder="Search by name, roll no, email...">
+            </div>
+          </div>
+          <div class="stat-item" style="color: var(--text-secondary);">
+            Showing <span id="studentFilterCount" style="color: var(--text-primary); font-weight: 700;">0</span> students
+          </div>
+        </div>
+
+        <!-- Student Table -->
+        <div class="table-container">
+          <table class="modern-table" id="studentsMasterTable">
+            <thead>
+              <tr>
+                <th style="width: 100px;">Roll No</th>
+                <th>Student Name</th>
+                <th>Class</th>
+                <th>Attendance %</th>
+                <th>Contact</th>
+                <th>Parent Phone</th>
+                <th style="text-align: right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="studentsTableBody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           VIEW 5: PRINTABLE ID CARDS & BADGES
+           ================================================================ -->
+      <section id="view-badges" class="view-section">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">Student Digital ID Cards & Badges</h2>
+            <p class="section-subtitle">Generate scannable QR passes for instant terminal attendance</p>
+          </div>
+          <div class="control-group">
+            <select id="badgeClassSelect" class="select-custom">
+              <!-- Classes -->
+            </select>
+            <button class="btn-primary no-print" onclick="window.print();">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+              Print ID Badges Sheet
+            </button>
+          </div>
+        </div>
+
+        <!-- ID Badges Grid -->
+        <div class="id-cards-grid" id="idBadgesContainer">
+          <!-- Populated with SVG QR codes and student details -->
+        </div>
+      </section>
+
+      <!-- ================================================================
+           VIEW 6: REPORTS & EXPORT
+           ================================================================ -->
+      <section id="view-reports" class="view-section">
+        <div class="print-header">
+          <h1>ACADEMIC ATTENDANCE REGISTER & REPORT</h1>
+          <p id="printReportMeta">Academic Session 2026-2027 • Official Institutional Record</p>
+        </div>
+
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">Attendance Reports & Register</h2>
+            <p class="section-subtitle">Comprehensive monthly attendance matrix, audit logs, and CSV/PDF export</p>
+          </div>
+          <div class="bulk-actions-group">
+            <button class="btn-secondary" id="btnExportCSV">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Export CSV
+            </button>
+            <button class="btn-primary no-print" onclick="window.print();">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+              Print Official Register
+            </button>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="attendance-controls-bar no-print">
+          <div class="control-group">
+            <div>
+              <label class="form-label" for="repClassSelect">Class</label>
+              <select id="repClassSelect" class="select-custom">
+                <!-- Classes -->
+              </select>
+            </div>
+            <div>
+              <label class="form-label" for="repSubjectSelect">Subject</label>
+              <select id="repSubjectSelect" class="select-custom">
+                <option value="general">General Daily</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label" for="repStartDate">Start Date</label>
+              <input type="date" id="repStartDate" class="input-custom">
+            </div>
+            <div>
+              <label class="form-label" for="repEndDate">End Date</label>
+              <input type="date" id="repEndDate" class="input-custom">
+            </div>
+            <div style="align-self: flex-end;">
+              <button class="btn-primary" id="btnFilterReports">Generate Report</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Monthly Attendance Matrix -->
+        <div class="table-container" style="overflow-x: auto;">
+          <table class="modern-table" id="reportMatrixTable">
+            <thead id="reportMatrixThead">
+              <!-- Dynamically populated dates columns -->
+            </thead>
+            <tbody id="reportMatrixTbody">
+              <!-- Dynamically populated students with P/A/L/E per day -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="print-signatures">
+          <div class="sig-line">Course Instructor Signature</div>
+          <div class="sig-line">Head of Department Signature</div>
+          <div class="sig-line">Principal / Dean Seal</div>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           VIEW 7: AT-RISK ATTENDANCE ALERTS (<75%)
+           ================================================================ -->
+      <section id="view-alerts" class="view-section">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title" style="color: #ef4444; display: flex; align-items: center; gap: 0.5rem;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+              Low Attendance Early Warning System (&lt;75%)
+            </h2>
+            <p class="section-subtitle">Students below the mandatory 75% attendance criterion for exams and promotion</p>
+          </div>
+          <div class="control-group">
+            <select id="alertClassFilter" class="select-custom">
+              <option value="">All Classes</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="modern-table">
+            <thead>
+              <tr>
+                <th style="width: 100px;">Roll No</th>
+                <th>Student Name</th>
+                <th>Class</th>
+                <th>Attendance Rate</th>
+                <th>Recorded Ratio (Present/Total)</th>
+                <th>Parent Guardian Contact</th>
+                <th style="text-align: right;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="alertsTableBody">
+              <!-- Dynamically populated at-risk students -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ====================================================================
+       MODALS & DIALOGS
+       ==================================================================== -->
+  <!-- 1. Add Student Modal -->
+  <dialog class="custom-modal" id="modalAddStudent">
+    <div class="modal-header">
+      <h3 class="modal-title">Enroll New Student</h3>
+      <button class="modal-close-btn" data-close="modalAddStudent">&times;</button>
+    </div>
+    <form id="formAddStudent">
+      <div class="modal-body form-grid">
+        <div class="form-group">
+          <label class="form-label" for="addRollNo">Roll Number *</label>
+          <input type="text" id="addRollNo" class="input-custom" placeholder="e.g. 1009" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="addFullName">Full Name *</label>
+          <input type="text" id="addFullName" class="input-custom" placeholder="e.g. Rachel Adams" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="addClassSelect">Class / Section *</label>
+          <select id="addClassSelect" class="select-custom" required></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="addGender">Gender</label>
+          <select id="addGender" class="select-custom">
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="addEmail">Student Email</label>
+          <input type="email" id="addEmail" class="input-custom" placeholder="student@school.edu">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="addPhone">Student Phone</label>
+          <input type="tel" id="addPhone" class="input-custom" placeholder="+1 555-0199">
+        </div>
+        <div class="form-group form-field-full">
+          <label class="form-label" for="addParentPhone">Parent / Guardian Contact</label>
+          <input type="tel" id="addParentPhone" class="input-custom" placeholder="+1 555-9199">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" data-close="modalAddStudent">Cancel</button>
+        <button type="submit" class="btn-primary">Register Student</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- 2. Add Class Modal -->
+  <dialog class="custom-modal" id="modalAddClass">
+    <div class="modal-header">
+      <h3 class="modal-title">Create Academic Class</h3>
+      <button class="modal-close-btn" data-close="modalAddClass">&times;</button>
+    </div>
+    <form id="formAddClass">
+      <div class="modal-body form-grid">
+        <div class="form-group form-field-full">
+          <label class="form-label" for="addClassName">Class Name *</label>
+          <input type="text" id="addClassName" class="input-custom" placeholder="e.g. Class 11 - Arts & Design" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="addClassDept">Department</label>
+          <input type="text" id="addClassDept" class="input-custom" placeholder="e.g. Higher Secondary">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="addClassYear">Academic Year</label>
+          <input type="text" id="addClassYear" class="input-custom" value="2026-2027">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" data-close="modalAddClass">Cancel</button>
+        <button type="submit" class="btn-primary">Create Class</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- 3. Add Subject Modal -->
+  <dialog class="custom-modal" id="modalAddSubject">
+    <div class="modal-header">
+      <h3 class="modal-title">Add Course / Subject</h3>
+      <button class="modal-close-btn" data-close="modalAddSubject">&times;</button>
+    </div>
+    <form id="formAddSubject">
+      <div class="modal-body form-grid">
+        <div class="form-group">
+          <label class="form-label" for="addSubCode">Subject Code *</label>
+          <input type="text" id="addSubCode" class="input-custom" placeholder="e.g. BIO101" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="addSubName">Subject Name *</label>
+          <input type="text" id="addSubName" class="input-custom" placeholder="e.g. Cell Biology" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="addSubClass">Assigned Class *</label>
+          <select id="addSubClass" class="select-custom" required></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="addSubTeacher">Teacher / Instructor</label>
+          <input type="text" id="addSubTeacher" class="input-custom" placeholder="e.g. Dr. John Miller">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" data-close="modalAddSubject">Cancel</button>
+        <button type="submit" class="btn-primary">Add Subject</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- 4. Student Attendance History Modal -->
+  <dialog class="custom-modal" id="modalStudentHistory" style="max-width: 680px;">
+    <div class="modal-header">
+      <div>
+        <h3 class="modal-title" id="historyModalStudentName">Student Profile</h3>
+        <p class="section-subtitle" id="historyModalRoll">Roll No: --</p>
+      </div>
+      <button class="modal-close-btn" data-close="modalStudentHistory">&times;</button>
+    </div>
+    <div class="modal-body">
+      <!-- Summary Stats -->
+      <div class="attendance-stats-pill" style="margin-bottom: 1rem; justify-content: space-around;">
+        <div>Rate: <strong id="historyRate" style="color: #6366f1;">0%</strong></div>
+        <div>Present: <strong id="historyPresent" style="color: #10b981;">0</strong></div>
+        <div>Late: <strong id="historyLate" style="color: #f59e0b;">0</strong></div>
+        <div>Absent: <strong id="historyAbsent" style="color: #f43f5e;">0</strong></div>
+      </div>
+      <div class="table-container" style="max-height: 320px; overflow-y: auto;">
+        <table class="modern-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Subject</th>
+              <th>Status</th>
+              <th>Time</th>
+              <th>Remarks</th>
+            </tr>
+          </thead>
+          <tbody id="historyTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn-secondary" data-close="modalStudentHistory">Close</button>
+    </div>
+  </dialog>
+
+  <!-- 5. Defaulter Notice Modal -->
+  <dialog class="custom-modal" id="modalDefaulterNotice" style="max-width: 580px;">
+    <div class="modal-header">
+      <h3 class="modal-title" style="color: #ef4444;">Official Low Attendance Notice</h3>
+      <button class="modal-close-btn" data-close="modalDefaulterNotice">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label" for="noticeMessageBody">Notice Draft (Ready to Copy/Send via SMS/Email):</label>
+        <textarea id="noticeMessageBody" class="input-custom" rows="8" style="resize: vertical; font-family: inherit; font-size: 0.85rem;" readonly></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn-secondary" data-close="modalDefaulterNotice">Close</button>
+      <button type="button" class="btn-primary" id="btnCopyNoticeText">Copy Notice</button>
+    </div>
+  </dialog>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" role="status" aria-live="polite"></div>
+
+  <!-- Scripts -->
+  <script src="js/qr-generator.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/scanner.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
